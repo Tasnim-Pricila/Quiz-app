@@ -9,11 +9,9 @@ export default function Home() {
         <p className="text-gray-600 mb-6">
           Test your knowledge with our online quizzes.
         </p>
-        {/* <Link href="/"> */}
-        <a className="bg-blue-500 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-600 transition">
+        <p className="bg-blue-500 text-white px-6 py-3 rounded-full text-lg hover:bg-blue-600 transition">
           Start Quiz
-        </a>
-        {/* </Link> */}
+        </p>
       </div>
     </div>
   );
