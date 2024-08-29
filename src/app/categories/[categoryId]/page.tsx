@@ -92,7 +92,7 @@ const CategoryWiseQuestion = () => {
       setTimeLeft((prevTime) => {
         if (prevTime === 1) {
           handleNextQuestion();
-          return 10; // Reset timer for next question
+          return 60; // Reset timer for next question
         }
         return prevTime - 1;
       });
@@ -105,7 +105,7 @@ const CategoryWiseQuestion = () => {
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions?.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setTimeLeft(10); // Reset time for the next question
+      setTimeLeft(60); // Reset time for the next question
     } else {
       setQuizCompleted(true);
     }
@@ -139,26 +139,28 @@ const CategoryWiseQuestion = () => {
   if (quizCompleted) {
     const correctCount = calculateResults();
     return (
-      <div className="p-6">
+      <div className="p-10 flex flex-col justify-center items-center">
         <h1 className="text-3xl font-bold mb-4">Quiz Completed!</h1>
         <p>
-          You got {correctCount} out of {questions?.length} questions correct.
+          You got <span className="text-green-600 font-bold text-xl"> {correctCount} </span>out of{" "}
+          <span className="text-green-600 font-bold text-xl">{questions?.length} </span>
+          questions correct.
         </p>
-        <h2 className="text-xl font-semibold mt-4">Review Questions:</h2>
-        <ul className="space-y-4">
+        <h2 className="text-2xl font-semibold mt-10 text-blue-500 underline">Review Questions</h2>
+        <ul className="flex gap-4 flex-wrap justify-center items-center">
           {questions?.map((question, index) => (
             <li
               key={question._id}
-              className="p-4 bg-white shadow-lg rounded-lg"
+              className="p-6 bg-white shadow-lg rounded-lg"
             >
-              <h2 className="text-lg font-semibold mb-2">
+              <h2 className="text-lg font-semibold mb-6">
                 {index + 1}. {question?.questionText}
               </h2>
-              <ul className="space-y-2">
+              <ul className="">
                 {question?.answers?.map((answer, answerIndex) => (
                   <li
                     key={answerIndex}
-                    className={`p-2 rounded ${
+                    className={`p-2 rounde font-semibold pl-4 ${
                       answer?.isCorrect ? "bg-green-100" : "bg-gray-100"
                     } ${
                       selectedAnswers[index] === answer?.text &&
@@ -193,9 +195,11 @@ const CategoryWiseQuestion = () => {
         backgroundRepeat: "no-repeat", // Prevents the image from repeating
       }}
     >
-      <h1 className="text-3xl font-bold mb-4">
-        Questions for {categoryDetails?.name}
-      </h1>
+      {currentQuestion ? (
+        <h1 className="text-3xl font-bold mb-4">
+          Questions for {categoryDetails?.name}
+        </h1>
+      ) : null}
       {currentQuestion ? (
         <div>
           <p className="text-lg mb-4 text-center">
