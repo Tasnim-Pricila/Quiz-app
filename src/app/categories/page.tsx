@@ -1,4 +1,3 @@
-// components/CategoryList.tsx
 "use client";
 
 import Link from "next/link";
@@ -22,15 +21,21 @@ const Categories = () => {
   }, []);
 
   return (
-    <div>
-      <h2>Quiz Categories</h2>
-      <ul>
+    <div className="container mx-auto p-4">
+      <h2 className="text-3xl font-bold my-6 mb-16 text-center">Quiz Categories</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {categories.map((category) => (
-          <Link href={`/categories/${category?._id}`} key={category._id}>
-            <li className="bg-blue-500 mb-2 text-center">{category.name}</li>
+          <Link
+            href={`/categories/${category?._id}`}
+            key={category?._id}
+            className="block"
+          >
+            <div className="bg-blue-500 text-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 text-center cursor-pointer">
+              <h3 className="text-lg font-semibold">{category?.name}</h3>
+            </div>
           </Link>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

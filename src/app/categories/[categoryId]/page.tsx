@@ -2,10 +2,15 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import bgImage from "../../../../public/assets/images/bg.jpg";
 
 interface Answer {
   text: string;
   isCorrect: boolean;
+}
+interface Category {
+  _id: string;
+  name: string;
 }
 
 interface Question {
@@ -21,10 +26,11 @@ const shuffleArray = (array: any[]) => {
 const CategoryWiseQuestion = () => {
   const { categoryId } = useParams();
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [categoryDetails, setCategoryDetails] = useState<Category>();
   const [loading, setLoading] = useState(true);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<(string | null)[]>([]);
-  const [timeLeft, setTimeLeft] = useState(10);
+  const [timeLeft, setTimeLeft] = useState(60);
   const [quizCompleted, setQuizCompleted] = useState(false);
 
   useEffect(() => {
@@ -62,6 +68,24 @@ const CategoryWiseQuestion = () => {
   }, [categoryId]);
 
   useEffect(() => {
+    if (categoryId) {
+      const fetchQuestions = async () => {
+        try {
+          const response = await fetch(`/api/quiz/categories/${categoryId}`);
+          const data = await response.json();
+          setCategoryDetails(data);
+        } catch (error) {
+          console.error("Failed to fetch category:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchQuestions();
+    }
+  }, [categoryId]);
+
+  useEffect(() => {
     if (quizCompleted) return;
 
     const timer = setInterval(() => {
@@ -75,6 +99,7 @@ const CategoryWiseQuestion = () => {
     }, 1000);
 
     return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuestionIndex, quizCompleted]);
 
   const handleNextQuestion = () => {
@@ -158,15 +183,27 @@ const CategoryWiseQuestion = () => {
   const isAnswerSelected = selectedAnswers[currentQuestionIndex] !== null;
 
   return (
-    <div className="p-6">
+    <div
+      className="p-6 border flex justify-center flex-col items-center"
+      style={{
+        background: `url(${bgImage})`,
+        height: "100vh", // or any other height you prefer
+        backgroundSize: "cover", // Ensures the image covers the entire div
+        backgroundPosition: "center", // Centers the image
+        backgroundRepeat: "no-repeat", // Prevents the image from repeating
+      }}
+    >
       <h1 className="text-3xl font-bold mb-4">
-        Questions for Category: {categoryId}
+        Questions for {categoryDetails?.name}
       </h1>
       {currentQuestion ? (
         <div>
-          <p className="text-lg mb-4">Time Left: {timeLeft} seconds</p>
-          <div className="p-4 bg-white shadow-lg rounded-lg">
-            <h2 className="text-xl font-semibold mb-2">
+          <p className="text-lg mb-4 text-center">
+            Time Left:{" "}
+            <span className="text-red-600 font-bold"> {timeLeft} </span> seconds
+          </p>
+          <div className="p-10 bg-white shadow-lg rounded-lg">
+            <h2 className="text-2xl font-semibold mb-10 px-10 py-6">
               {`${currentQuestionIndex + 1}. ${currentQuestion?.questionText}`}
             </h2>
             <ul className="space-y-2">
@@ -174,41 +211,45 @@ const CategoryWiseQuestion = () => {
                 <li
                   key={index}
                   onClick={() => handleAnswerSelect(index)}
-                  className={`p-2 rounded cursor-pointer ${
+                  className={`rounded cursor-pointer px-10 py-4 text-center text-lg font-semibold ${
                     selectedAnswers[currentQuestionIndex] === answer?.text
                       ? "bg-blue-100"
                       : "bg-gray-100"
                   }`}
                 >
-                  {answer.text}
+                  {answer?.text}
                 </li>
               ))}
             </ul>
           </div>
           {isLastQuestion ? (
-            <button
-              onClick={() => setQuizCompleted(true)}
-              className={`mt-4 bg-green-500 text-white px-4 py-2 rounded ${
-                !isAnswerSelected
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-green-600"
-              }`}
-              disabled={!isAnswerSelected}
-            >
-              Complete Quiz
-            </button>
+            <div className="flex justify-end">
+              <button
+                onClick={() => setQuizCompleted(true)}
+                className={`mt-4 bg-green-500 text-white px-4 py-2  ${
+                  !isAnswerSelected
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-green-600"
+                }`}
+                disabled={!isAnswerSelected}
+              >
+                Complete Quiz
+              </button>
+            </div>
           ) : (
-            <button
-              onClick={handleNextQuestion}
-              className={`mt-4 bg-blue-500 text-white px-4 py-2 rounded ${
-                !isAnswerSelected
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-blue-600"
-              }`}
-              disabled={!isAnswerSelected}
-            >
-              Next Question
-            </button>
+            <div className=" flex justify-end">
+              <button
+                onClick={handleNextQuestion}
+                className={`mt-4 bg-blue-500 text-white px-4 py-2 rounded ${
+                  !isAnswerSelected
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-blue-600"
+                }`}
+                disabled={!isAnswerSelected}
+              >
+                Next Question
+              </button>
+            </div>
           )}
         </div>
       ) : (
