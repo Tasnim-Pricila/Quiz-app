@@ -2,7 +2,6 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie"; // Import js-cookie
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
@@ -27,23 +26,15 @@ const Login = () => {
 
       if (response?.ok) {
         const data = await response.json();
-        console.log(data);
-        setSuccess(data.message); // Display success message
-
-        // Store the access token in local storage
+        setSuccess(data.message);
         localStorage.setItem("accessToken", data?.accessToken);
-
-        // Store the refresh token in an HTTP-only cookie
-       document.cookie = `refreshToken=${data.refreshToken}; path=/;`;
-
-        // Redirect to a protected route or homepage
-        router.push("/"); // Replace with your protected route
+        document.cookie = `refreshToken=${data.refreshToken}; path=/;`;
+        router.push("/"); 
       } else {
         const errorData = await response.json();
         setError(errorData.error); // Set error message
       }
     } catch (err) {
-      console.log(err);
       setError("An error occurred. Please try again.");
     }
   };

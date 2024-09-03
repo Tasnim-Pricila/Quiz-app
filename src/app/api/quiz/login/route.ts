@@ -3,8 +3,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import clientPromise from "@/lib/mongodb";
 
-const ACCESS_TOKEN_SECRET = "your_access_token_secret"; // Replace with your actual access token secret key
-const REFRESH_TOKEN_SECRET = "your_refresh_token_secret"; // Replace with your actual refresh token secret key
+const ACCESS_TOKEN_SECRET = "your_access_token_secret";
+const REFRESH_TOKEN_SECRET = "your_refresh_token_secret";
 
 export async function POST(req: NextRequest) {
   try {
@@ -35,14 +35,14 @@ export async function POST(req: NextRequest) {
     // Create access token
     const accessToken = jwt.sign(
       { userId: user._id, email: user.email },
-      ACCESS_TOKEN_SECRET,
+      ACCESS_TOKEN_SECRET as string,
       { expiresIn: "1h" } // Access token valid for 1 hour
     );
 
     // Create refresh token
     const refreshToken = jwt.sign(
       { userId: user._id, email: user.email },
-      REFRESH_TOKEN_SECRET,
+      REFRESH_TOKEN_SECRET as string,
       { expiresIn: "7d" } // Refresh token valid for 7 days
     );
 
