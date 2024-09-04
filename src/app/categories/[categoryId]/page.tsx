@@ -2,7 +2,6 @@ import bgImage from "../../../../public/assets/images/bg.jpg";
 import QuestionComponent from "./QuestionComponent";
 import { Category, Question } from "./type";
 
-
 const shuffleArray = (array: any[]) => {
   return array.sort(() => Math.random() - 0.5);
 };
@@ -23,7 +22,7 @@ async function getCategoryQuestion(categoryId: string) {
 
   // Shuffle the questions and pick the first 20
   const shuffledQuestions = data.sort(() => 0.5 - Math.random());
-  const limitedQuestions = shuffledQuestions.slice(0, 2);
+  const limitedQuestions = shuffledQuestions.slice(0, 20);
 
   // Shuffle the answers for each question
   const questionsWithShuffledAnswers = limitedQuestions.map(
@@ -39,17 +38,7 @@ async function CategoryWiseQuestion({ params }: { params: any }) {
   const data = await getCategoryQuestion(params?.categoryId);
 
   return (
-    <div
-      className="flex justify-center flex-col items-center"
-      style={{
-        // background: `url(${bgImage})`,
-        // // height: "100vh",
-        // backgroundSize: "cover",
-        // backgroundPosition: "center",
-        // backgroundRepeat: "no-repeat",
-      }}
-    >
-     
+    <div className="flex justify-center flex-col items-center">
       <QuestionComponent data={data} />
     </div>
   );

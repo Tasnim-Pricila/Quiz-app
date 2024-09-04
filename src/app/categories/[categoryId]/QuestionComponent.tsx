@@ -14,13 +14,14 @@ const QuestionComponent = ({ data }: { data: Question[] }) => {
   const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
+    if (timer === 0) {
+      handleNextQuestion();
+      return;
+    }
+
     const interval = setInterval(() => {
       setTimer((prevTimer) => prevTimer - 1);
     }, 1000);
-
-    if (timer === 0) {
-      handleNextQuestion();
-    }
 
     return () => clearInterval(interval);
   }, [timer]);
@@ -30,23 +31,21 @@ const QuestionComponent = ({ data }: { data: Question[] }) => {
   };
 
   const handleNextQuestion = () => {
-    if (selectedAnswer) {
-      const isCorrect = selectedAnswer.isCorrect;
-      const result = {
-        question: data[currentQuestionIndex],
-        selected: selectedAnswer,
-        isCorrect,
-      };
+    const isCorrect = selectedAnswer?.isCorrect || false;
+    const result = {
+      question: data[currentQuestionIndex],
+      selected: selectedAnswer,
+      isCorrect,
+    };
 
-      setResults((prevResults) => [...prevResults, result]);
-      setSelectedAnswer(null);
-      setTimer(60);
+    setResults((prevResults) => [...prevResults, result]);
+    setSelectedAnswer(null);
+    setTimer(60);
 
-      if (currentQuestionIndex < data.length - 1) {
-        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-      } else {
-        setShowResults(true);
-      }
+    if (currentQuestionIndex < data.length - 1) {
+      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+    } else {
+      setShowResults(true);
     }
   };
 
@@ -153,8 +152,7 @@ const QuestionComponent = ({ data }: { data: Question[] }) => {
             </li>
           ))}
         </ul>
-        {/* <p>Time remaining: {timer} seconds</p> */}
-        <div className=" flex justify-end">
+        <div className="flex justify-end">
           <button
             onClick={handleNextQuestion}
             className={`mt-4 bg-blue-500 text-white px-4 py-2 rounded ${
