@@ -61,24 +61,30 @@ const QuestionComponent = ({ data }: { data: Question[] }) => {
     ).length;
     return (
       <div>
-        <h2>Quiz Results</h2>
-        <p>
-          Correct Answers: {correctAnswersCount} out of {data.length}
+        <h1 className="text-3xl font-bold mb-4 mt-10">Quiz Completed!</h1>
+        <p className="text-xl underline font-bold">
+          You got
+          <span className="text-green-600 font-bold">
+            {" "}
+            {correctAnswersCount}
+          </span>
+          /<span className="text-green-600 font-bold">{data?.length} </span>
         </p>
-        <ul>
+
+        <ul className="mt-6">
           {results.map((result, index) => (
             <li
               key={index}
               style={{ marginBottom: "20px", listStyleType: "none" }}
             >
-              <strong>
-                Question {index + 1}: {result.question.questionText}
+              <strong className="mb-2 block">
+                Ques {index + 1}: {result?.question?.questionText}
               </strong>
               <ul>
                 {result.question.answers.map((answer, idx) => {
-                  const isCorrectAnswer = answer.isCorrect;
+                  const isCorrectAnswer = answer?.isCorrect;
                   const isSelectedAnswer =
-                    result.selected?.text === answer.text;
+                    result.selected?.text === answer?.text;
                   const backgroundColor = isCorrectAnswer
                     ? "lightgreen"
                     : isSelectedAnswer && !isCorrectAnswer
@@ -96,15 +102,15 @@ const QuestionComponent = ({ data }: { data: Question[] }) => {
                         marginBottom: "5px",
                       }}
                     >
-                      {answer.text}
+                      {answer?.text}
                     </li>
                   );
                 })}
               </ul>
               {result.isCorrect ? (
-                <span style={{ color: "green" }}>Correct</span>
+                <span style={{ color: "green", fontWeight: 600 }}>Correct</span>
               ) : (
-                <span style={{ color: "red" }}>Incorrect</span>
+                <span style={{ color: "red", fontWeight: 600 }}>Incorrect</span>
               )}
             </li>
           ))}
@@ -120,37 +126,53 @@ const QuestionComponent = ({ data }: { data: Question[] }) => {
   const currentQuestion = data[currentQuestionIndex];
 
   return (
-    <div>
-      <h2>
-        Question {currentQuestionIndex + 1}/{data.length}
-      </h2>
-      <p>{currentQuestion?.questionText}</p>
-      <ul>
-        {currentQuestion?.answers?.map((answer, index) => (
-          <li key={index}>
-            <button
-              onClick={() => handleAnswerSelection(answer)}
-              disabled={!!selectedAnswer}
-              style={{
-                backgroundColor:
-                  selectedAnswer === answer ? "lightblue" : "white",
-                padding: "10px",
-                borderRadius: "5px",
-                border: "1px solid #ddd",
-                marginBottom: "5px",
-                width: "100%",
-                textAlign: "left",
-              }}
-            >
-              {answer.text}
-            </button>
-          </li>
-        ))}
-      </ul>
-      <p>Time remaining: {timer} seconds</p>
-      <button onClick={handleNextQuestion} disabled={!selectedAnswer}>
-        {currentQuestionIndex === data.length - 1 ? "Submit" : "Next"}
-      </button>
+    <div className="h-screen w-screen p-10 flex justify-center items-center">
+      <div>
+        <h2 className="font-semibold text-center text-xl mb-4">
+          Question {currentQuestionIndex + 1}/{data?.length}
+        </h2>
+        <p className="text-lg mb-4 text-center">
+          Time Left: <span className="text-red-600 font-bold"> {timer} </span>{" "}
+          seconds
+        </p>
+        <p className="text-2xl font-semibold py-4">
+          {currentQuestion?.questionText}
+        </p>
+        <ul>
+          {currentQuestion?.answers?.map((answer, index) => (
+            <li key={index}>
+              <button
+                onClick={() => handleAnswerSelection(answer)}
+                disabled={!!selectedAnswer}
+                className={`rounded cursor-pointer px-10 py-4 text-lg font-medium mb-5 border w-full text-left ${
+                  selectedAnswer === answer ? "bg-blue-100" : "bg-white"
+                }`}
+              >
+                {answer?.text}
+              </button>
+            </li>
+          ))}
+        </ul>
+        {/* <p>Time remaining: {timer} seconds</p> */}
+        <div className=" flex justify-end">
+          <button
+            onClick={handleNextQuestion}
+            className={`mt-4 bg-blue-500 text-white px-4 py-2 rounded ${
+              !selectedAnswer ? "opacity-50 cursor-not-allowed" : ""
+            }
+            ${
+              currentQuestionIndex === data?.length - 1
+                ? "bg-blue-500"
+                : "bg-green-500"
+            }`}
+            disabled={!selectedAnswer}
+          >
+            {currentQuestionIndex === data?.length - 1
+              ? "Submit"
+              : "Next Question"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

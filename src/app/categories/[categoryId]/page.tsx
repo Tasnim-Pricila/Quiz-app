@@ -16,14 +16,14 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function getCategoryQuestion(categoryId: string) {
+async function getCategoryQuestion(categoryId: string) {
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   const response = await fetch(`${baseUrl}/api/quiz/questions/${categoryId}`);
   const data = await response.json();
 
   // Shuffle the questions and pick the first 20
   const shuffledQuestions = data.sort(() => 0.5 - Math.random());
-  const limitedQuestions = shuffledQuestions.slice(0, 20);
+  const limitedQuestions = shuffledQuestions.slice(0, 2);
 
   // Shuffle the answers for each question
   const questionsWithShuffledAnswers = limitedQuestions.map(
@@ -32,8 +32,6 @@ export async function getCategoryQuestion(categoryId: string) {
       answers: shuffleArray(question.answers),
     })
   );
-  console.log(questionsWithShuffledAnswers);
-
   return questionsWithShuffledAnswers;
 }
 
@@ -42,7 +40,7 @@ async function CategoryWiseQuestion({ params }: { params: any }) {
 
   return (
     <div
-      className="p-6 border flex justify-center flex-col items-center"
+      className="flex justify-center flex-col items-center"
       style={{
         // background: `url(${bgImage})`,
         // // height: "100vh",
