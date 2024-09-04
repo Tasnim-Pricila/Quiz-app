@@ -1,8 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useState, useEffect } from "react";
 import { Answer, Question } from "./type";
-import Loading from "@/components/Loading";
 
 const QuestionComponent = ({ data }: { data: Question[] }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -116,10 +116,6 @@ const QuestionComponent = ({ data }: { data: Question[] }) => {
         </ul>
       </div>
     );
-  }
-
-  if (data.length === 0) {
-    return <Loading />;
   }
 
   const currentQuestion = data[currentQuestionIndex];

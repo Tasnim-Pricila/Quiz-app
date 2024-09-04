@@ -1,6 +1,8 @@
+import { Suspense } from "react";
 import bgImage from "../../../../public/assets/images/bg.jpg";
 import QuestionComponent from "./QuestionComponent";
 import { Category, Question } from "./type";
+import Loading from "@/app/loading";
 
 const shuffleArray = (array: any[]) => {
   return array.sort(() => Math.random() - 0.5);
@@ -22,13 +24,13 @@ async function getCategoryQuestion(categoryId: string) {
 
   // Shuffle the questions and pick the first 20
   const shuffledQuestions = data.sort(() => 0.5 - Math.random());
-  const limitedQuestions = shuffledQuestions.slice(0, 20);
+  const limitedQuestions = shuffledQuestions?.slice(0, 20);
 
   // Shuffle the answers for each question
   const questionsWithShuffledAnswers = limitedQuestions.map(
     (question: Question) => ({
       ...question,
-      answers: shuffleArray(question.answers),
+      answers: shuffleArray(question?.answers),
     })
   );
   return questionsWithShuffledAnswers;
@@ -38,9 +40,11 @@ async function CategoryWiseQuestion({ params }: { params: any }) {
   const data = await getCategoryQuestion(params?.categoryId);
 
   return (
-    <div className="flex justify-center flex-col items-center">
-      <QuestionComponent data={data} />
-    </div>
+    <Suspense fallback={<Loading />}>
+      <div className="flex justify-center flex-col items-center">
+        <QuestionComponent data={data} />
+      </div>
+    </Suspense>
   );
 }
 
