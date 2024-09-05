@@ -16,7 +16,7 @@ export async function POST(req: Request) {
       !categoryId ||
       !questionText ||
       !Array.isArray(answers) ||
-      answers.length !== 3
+      answers.length !== 4
     ) {
       return NextResponse.json(
         { error: "Invalid request body" },
